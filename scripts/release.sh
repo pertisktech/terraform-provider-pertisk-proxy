@@ -83,11 +83,20 @@ fi
 
 echo "signing with GPG key $GPG_KEY_ID"
 sums="$DIST/${BIN}_${VERSION}_SHA256SUMS"
+rm -f "${sums}.sig"
 sign_ok=0
-if gpg --batch --yes --pinentry-mode loopback \
-  --passphrase "${GPG_PASSPHRASE-}" \
-  --detach-sign -u "$GPG_KEY_ID" "$sums" 2>/dev/null; then
-  sign_ok=1
+if [[ -n "${GPG_PASSPHRASE-}" ]]; then
+  if printf '%s' "$GPG_PASSPHRASE" | gpg --batch --yes --pinentry-mode loopback \
+    --passphrase-fd 0 \
+    --detach-sign -u "$GPG_KEY_ID" "$sums"; then
+    sign_ok=1
+  fi
+else
+  if gpg --batch --yes --pinentry-mode loopback \
+    --passphrase '' \
+    --detach-sign -u "$GPG_KEY_ID" "$sums" 2>/dev/null; then
+    sign_ok=1
+  fi
 fi
 if [[ "$sign_ok" -ne 1 ]]; then
   echo "loopback signing failed; trying interactive pinentry…"

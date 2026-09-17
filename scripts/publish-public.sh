@@ -23,7 +23,7 @@ DIST="$ROOT/dist"
 TAG="v${VERSION}"
 
 echo "==> building + signing release ${VERSION}"
-VERSION="$VERSION" bash "$ROOT/scripts/release.sh"
+VERSION="$VERSION" GPG_PASSPHRASE="${GPG_PASSPHRASE-}" bash "$ROOT/scripts/release.sh"
 
 sig="$DIST/terraform-provider-pertisk-proxy_${VERSION}_SHA256SUMS.sig"
 if [[ ! -f "$sig" ]]; then
