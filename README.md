@@ -91,5 +91,6 @@ Credentials env: `PERTISK_ENDPOINT`, `PERTISK_USERNAME`, `PERTISK_PASSWORD`, `PE
 | `make build` / `make install` | Local plugin binary |
 | `make release` | Multi-platform zips + manifest + GPG signature in `dist/` |
 | `make publish` | Upload `dist/` to HCP **private** registry (`pertisktech`) |
+| `make publish-public` | Sync + GitHub Release for **public** Registry (`pertisktech/pertisk-proxy`) |
 | `make sync-provider-repo` | Mirror `terraform/` → `terraform-provider-pertisk-proxy` for public Registry |
 | `make test` | `go test ./...` |
