@@ -63,7 +63,15 @@ cp "$DIST/${BIN}_${VERSION}_manifest.json" "$ROOT/terraform-registry-manifest.js
 )
 
 if [[ -z "$GPG_KEY_ID" ]]; then
-  # Prefer the pertisktech release key (often created without a passphrase).
+  # Prefer passphrase-free public-registry key, then legacy pertisktech key.
+  GPG_KEY_ID="$(
+    gpg --list-secret-keys --with-colons 2>/dev/null | awk -F: '
+      /^sec:/ { kid=$5; next }
+      /^uid:/ && tolower($10) ~ /pertisktech-registry/ { print kid; exit }
+    '
+  )"
+fi
+if [[ -z "$GPG_KEY_ID" ]]; then
   GPG_KEY_ID="$(
     gpg --list-secret-keys --with-colons 2>/dev/null | awk -F: '
       /^sec:/ { kid=$5; next }
